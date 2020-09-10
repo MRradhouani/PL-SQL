@@ -1,0 +1,47 @@
+1.....
+
+DECLARE
+Customer_id NUMBER(10)    NOT NULL , customer_Name varchar2(20) , customer_Tel  ;
+BEGIN
+dbms_output.put_line(Customer_id ,customer_Name ,customer_Tel   );
+END;
+/
+
+2.....
+
+CREATE OR REPLACE PROCEDURE PS_Customer_Prodcuts
+    [ (customer_id [,parameter]) ]
+
+IS
+    AS
+
+BEGIN
+    
+IF (  Customer.customer_id != orders.Customer_id ) THEN
+
+[EXCEPTION
+    No_Data_Found]
+message : “No products returned or customer not found”
+ELSE
+dbms_output.put_line(Product_id, product_name, category, Price)
+END PS_Customer_Prodcuts ;
+
+3.......
+CREATE OR REPLACE FUNCTION FN_Customer_Orders (v_dep_id Customer.Customer_id%type) RETURN number IS
+	quantity number;
+BEGIN
+	SELECT count(*) into quantity FROM Customer WHERE Customer_id=v_dep_id;
+	RETURN quantity ;
+END;
+/
+
+4......
+CREATE TRIGGER TRIG_INS_ORDERS 
+AFTER INSERT OR UPDATE ON Orders 
+BEGIN
+	IF ( OrderDate >= SYSDATE ) THEN
+	RAISE_APPLICATION_ERROR (-20567 ,
+	'Order Date must be greater than or equal to today's date');
+END IF ;
+END;
+/
